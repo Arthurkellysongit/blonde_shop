@@ -1,65 +1,156 @@
+"use client";
+
+import { useState } from "react";
 import Image from "next/image";
+import { motion } from "framer-motion";
+
+const products = [
+  {
+    id: 1,
+    name: "Vestido Floral",
+    price: "R$ 129,90",
+    image: "/fotos/vestido.jpg",
+    description: "Vestido leve e confortável para o dia a dia.",
+  },
+  {
+    id: 2,
+    name: "Blusa Básica",
+    price: "R$ 59,90",
+    image: "/fotos/blusa.jpg",
+    description: "Blusa básica em algodão premium.",
+  },
+   {
+    id: 3,
+    name: "Bracelete Pulseira Feminino Ajustável Berloque Aço inox 316l Coração",
+    price: "R$ 40,90",
+    image: "/fotos/Bracelete.jpg",
+    description: "Os aços inox 316L não oxidam e não descascam por isso garantimos a sua qualidade.",
+  },
+];
 
 export default function Home() {
+  const [search, setSearch] = useState("");
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+
+  const filteredProducts = products.filter((product) =>
+    product.name.toLowerCase().includes(search.toLowerCase())
+  );
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
+    <main className="min-h-screen bg-gradient-to-b from-pink-50 to-white">
+
+      {/* NAVBAR */}
+      <header className="sticky top-0 bg-white shadow-sm z-50">
+        <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center gap-4 p-4">
+
+          <h1 className="text-2xl font-bold text-pink-600">
+            Blonde Shop
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+
+          <div className="w-full md:flex-1">
+           <input
+  type="text"
+  placeholder="Buscar produto..."
+  value={search}
+  onChange={(e) => setSearch(e.target.value)}
+  className="w-full h-11 px-4 rounded-xl border border-pink-600
+  focus:outline-none focus:ring-2 focus:ring-pink-600
+  text-pink-600 placeholder-pink-600"
+/>
+          </div>
+
+        </div>
+      </header>
+
+      {/* HERO */}
+      <section className="text-center py-16 px-6">
+        <h2 className="text-4xl md:text-5xl font-bold mb-4 text-pink-600">
+          Nova Coleção 2026
+        </h2>
+        <p className="text-gray-600 max-w-xl mx-auto">
+          Peças modernas, elegantes e perfeitas para destacar sua beleza.
+        </p>
+      </section>
+
+      {/* PRODUTOS */}
+      <section className="max-w-6xl mx-auto px-6 pb-16">
+        {filteredProducts.length === 0 ? (
+          <p className="text-center text-gray-500">
+            Nenhum produto encontrado.
           </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            {filteredProducts.map((product) => (
+              <motion.div
+                key={product.id}
+                whileHover={{ y: -6 }}
+                transition={{ type: "spring", stiffness: 200 }}
+                className="bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 p-4"
+              >
+                {/* IMAGEM CLICÁVEL */}
+                
+                <div
+  className="overflow-hidden rounded-2xl cursor-pointer bg-white"
+  onClick={() => setSelectedImage(product.image)}
+>
+  <Image
+    src={product.image}
+    alt={product.name}
+    width={400}
+    height={400}
+    className="w-full h-auto object-contain"
+  />
+</div>
+                <div className="mt-4">
+                  <h3 className="text-xl text-gray-600">
+                    {product.name}
+                  </h3>
+                  <p className="text-gray-500 text-sm mt-1">
+                    {product.description}
+                  </p>
+                  <p className="text-pink-600 font-bold text-lg mt-3">
+                    {product.price}
+                  </p>
+                </div>
+
+                <a
+                  href={`https://wa.me/558399999999?text=${encodeURIComponent(
+                    `Olá! Tenho interesse no produto: ${product.name}`
+                  )}`}
+                  target="_blank"
+                  className="block text-center mt-4 bg-green-500 text-white py-2 rounded-2xl hover:bg-green-600 transition"
+                >
+                  Falar no WhatsApp
+                </a>
+              </motion.div>
+            ))}
+          </div>
+        )}
+      </section>
+
+      {/* MODAL ZOOM */}
+     {selectedImage && (
+ <div
+    className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-6"
+    onClick={() => setSelectedImage(null)}
+    >
+    <div className="max-w-4xl w-full">
+      <Image
+        src={selectedImage}
+        alt="Imagem ampliada"
+        width={1000}
+        height={1000}
+        className="w-[100%] h-[90vh] object-contain rounded-xl mx-auto"
+      />
     </div>
+  </div>
+)}
+
+      {/* FOOTER */}
+      <footer className="bg-white border-t py-6 text-center text-gray-500 text-sm">
+        © 2026 Blonde Shop. Todos os direitos reservados.
+      </footer>
+
+    </main>
   );
 }
